@@ -64,12 +64,13 @@ def database(address):
         else:
             i = 'No luck'
             return i
-
+    
 def main():
+    print("Most common- 3, 6, 9, 12, 15, 18, 21, 24")
+    num = input("Passphrase Word Count? > ")
     generator = True
     while True:
         if generator:
-            num = values['num']
             mnemonic = bip(num)
             masterkey = master(mnemonic)
             public_key = pubkey(masterkey)
