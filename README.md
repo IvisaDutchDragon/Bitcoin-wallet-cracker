@@ -24,7 +24,7 @@ git clone https://github.com/IvisaDutchDragon/Bitcoin-wallet-cracker.git
 
 cd Bitcoin-wallet-cracker && pip install -r requirements.txt
 
-python bc.py
+python3 bc_brainwallet.py
 
 ```
 
