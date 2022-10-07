@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 import hashlib
 import os
 import random
@@ -8,7 +7,6 @@ import ecdsa
 import base58
 import datetime
 import webbrowser
-import PySimpleGUI as sg
 from json import (load as jsonload, dump as jsondump)
 from os import path
 import json
@@ -67,87 +65,9 @@ def database(address):
             i = 'No luck'
             return i
 
-
-SETTINGS_FILE = path.join(path.dirname(__file__), r'settings_file.cfg')
-DEFAULT_SETTINGS = {'theme': sg.theme()}
-SETTINGS_KEYS_TO_ELEMENT_KEYS = {'theme': '-THEME-'}
-
-def load_settings(settings_file, default_settings):
-    try:
-        with open(settings_file, 'r') as f:
-            settings = jsonload(f)
-    except Exception as e:
-        sg.popup_quick_message(f'exception {e}', 'No settings file found... will create one for you', keep_on_top=True, background_color='red', text_color='white')
-        settings = default_settings
-        save_settings(settings_file, settings, None)
-    return settings
-
-
-def save_settings(settings_file, settings, values):
-    if values:      
-        for key in SETTINGS_KEYS_TO_ELEMENT_KEYS:  
-            try:
-                settings[key] = values[SETTINGS_KEYS_TO_ELEMENT_KEYS[key]]
-            except Exception as e:
-                print(f'Problem updating settings from window values. Key = {key}')
-
-    with open(settings_file, 'w') as f:
-        jsondump(settings, f)
-
-    sg.popup('Settings saved')
-
-def create_settings_window(settings):
-    sg.theme(settings['theme'])
-
-    def TextLabel(text): return sg.Text(text+':', justification='r', size=(15,1))
-
-    layout = [  [sg.Text('Settings', font='Any 15')],
-                [TextLabel('Theme'),sg.Combo(sg.theme_list(), size=(20, 20), key='-THEME-')],
-                [sg.Button('Save'), sg.Button('Exit')]  ]
-
-    window = sg.Window('Settings', layout, keep_on_top=True, finalize=True)
-
-    for key in SETTINGS_KEYS_TO_ELEMENT_KEYS:
-        try:
-            window[SETTINGS_KEYS_TO_ELEMENT_KEYS[key]].update(value=settings[key])
-        except Exception as e:
-            print(f'Problem updating PySimpleGUI window from settings. Key = {key}')
-
-    return window
-
-
-def create_main_window(settings):
-    sg.theme(settings['theme'])
-
-    menu_def = [['&Menu', ['&Settings', 'E&xit']]]
-
-    layout = [[sg.Menu(menu_def)],
-              [sg.Text('Number of mnemonic words', size=(30,1), font=('Comic sans ms', 10)),
-               sg.Spin(values=('3', '6', '9', '12', '15', '18', '21', '24'),size=(3,1), key='num'), sg.Text('', size=(17,1))],
-              [sg.Text('This program has been running for... ', size=(30,1), font=('Comic sans ms', 10)),
-               sg.Text('', size=(30,1), font=('Comic sans ms', 10), key='_DATE_')],
-              [sg.Text('')],
-              [sg.Output(size=(87, 20), font=('Comic sans ms', 8), key='out')],
-              [sg.Button('Start/Stop',  font=('Comic sans ms', 10))]]
-
-    return sg.Window('Bitcoin wallet cracker',
-                     layout=layout,
-                     default_element_size=(9,1))
-
-
-
 def main():
-    window, settings = None, load_settings(SETTINGS_FILE, DEFAULT_SETTINGS )
-    generator = False
+    generator = True
     while True:
-        if window is None:
-            window = create_main_window(settings)
-        event, values = window.Read(timeout=10)
-        window.Element('_DATE_').Update(str(datetime.datetime.now()-start_time))
-        if event in (None, 'Exit'):
-            break
-        elif event == 'Start/Stop':
-            generator = not generator
         if generator:
             num = values['num']
             mnemonic = bip(num)
@@ -162,16 +82,5 @@ def main():
                   'wif:                                        '+str(WIF)+"\n"+
                   'address with balance:           '+str(data_base)+'\n\n')
             
-        elif event == 'Settings':
-            event, values = create_settings_window(settings).read(close=True)
-            if event == 'Save':
-                window.close()
-                window = None
-                save_settings(SETTINGS_FILE, settings, values)
-
-
-    
-    window.Close()
-    
 main()
 
