@@ -23,9 +23,26 @@ def bip(num):
                 for word in range(int(num))]
             return ' '.join(sent)
 
+def passw(filename):
+    try:
+        with open(filename, 'r') as f:
+            words = f.read().split()
+            for word in words:
+                sent = [random.choice(words)
+                        for word in range(int(1))]
+                return ' '.join(sent)
+    except FileNotFoundError:
+        pass
+    except TypeError:
+        pass
 
-def master(mnemonic):
-        return hashlib.sha256(mnemonic.encode("utf-8")).hexdigest().upper()
+
+def hmac512(mnemonic, passphrase):
+    d = mnemonic+' '+ passphrase
+    return d
+    
+def master(hmacsha512):
+    return hashlib.sha256(hmacsha512.encode("utf-8")).hexdigest().upper()
 
 
 def pubkey(masterkey):
@@ -64,10 +81,12 @@ def database(address):
         else:
             i = 'No luck'
             return i
+
     
 def main():
     print("Most common- 3, 6, 9, 12, 15, 18, 21, 24")
     num = input("Passphrase Word Count? > ")
+    #num = int(num)
     generator = True
     while True:
         if generator:
