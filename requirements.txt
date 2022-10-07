@@ -1,5 +1,3 @@
-PySimpleGUI
-
 ecdsa
 
 base58
