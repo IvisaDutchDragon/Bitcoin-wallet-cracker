@@ -5,7 +5,7 @@ import random
 import binascii
 import ecdsa
 import base58
-import datetime
+#import datetime
 import webbrowser
 from json import (load as jsonload, dump as jsondump)
 from os import path
@@ -13,7 +13,7 @@ import json
 import hmac
 import base64
 
-start_time = datetime.datetime.now()
+#start_time = datetime.datetime.now()
 
 def bip(num):
     with open('BIP0039.txt', 'r') as f:
